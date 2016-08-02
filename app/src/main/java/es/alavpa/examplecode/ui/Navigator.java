@@ -3,6 +3,7 @@ package es.alavpa.examplecode.ui;
 import android.content.Context;
 import android.content.Intent;
 
+import es.alavpa.examplecode.ui.followers.FollowersActivity;
 import es.alavpa.examplecode.ui.friends.FriendsActivity;
 import es.alavpa.examplecode.ui.login.LoginActivity;
 
@@ -15,9 +16,16 @@ public class Navigator {
         return new Intent(ctx,activityClass);
     }
 
-    public void goToMainActivity(Context ctx){
+    public void goToFriendsActivity(Context ctx){
         if(ctx!=null) {
             Intent i = getIntent(ctx, FriendsActivity.class);
+            ctx.startActivity(i);
+        }
+    }
+
+    public void goToFollowersActivity(Context ctx){
+        if(ctx!=null) {
+            Intent i = getIntent(ctx, FollowersActivity.class);
             ctx.startActivity(i);
         }
     }

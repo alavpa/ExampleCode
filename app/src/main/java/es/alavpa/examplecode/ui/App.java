@@ -6,6 +6,7 @@ import com.crashlytics.android.Crashlytics;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 
+import es.alavpa.examplecode.BuildConfig;
 import io.fabric.sdk.android.Fabric;
 
 /**
@@ -14,8 +15,6 @@ import io.fabric.sdk.android.Fabric;
 public class App extends Application{
 
     // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
-    private static final String TWITTER_KEY = "xxxxxxxxxxxxxxxxxxxxx";
-    private static final String TWITTER_SECRET = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 
     private static App application;
     public static App getApplication(){
@@ -25,7 +24,7 @@ public class App extends Application{
     @Override
     public void onCreate() {
         super.onCreate();
-        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(BuildConfig.TWITTER_KEY, BuildConfig.TWITTER_SECRET);
         Fabric.with(this, new Crashlytics(), new Twitter(authConfig));
 
         application = this;

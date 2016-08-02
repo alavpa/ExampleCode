@@ -1,4 +1,4 @@
-package es.alavpa.examplecode.ui.friends;
+package es.alavpa.examplecode.ui.followers;
 
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
@@ -6,8 +6,8 @@ import com.twitter.sdk.android.core.TwitterException;
 
 import java.util.List;
 
-import es.alavpa.examplecode.data.api.model.FriendListResponse;
-import es.alavpa.examplecode.interactors.LoadFriends;
+import es.alavpa.examplecode.data.api.model.FollowersListResponse;
+import es.alavpa.examplecode.interactors.LoadFollowers;
 import es.alavpa.examplecode.ui.mappers.UserViewMapper;
 import es.alavpa.examplecode.ui.model.UserView;
 import rx.Subscriber;
@@ -15,36 +15,35 @@ import rx.Subscriber;
 /**
  * Created by alavpa on 1/8/16.
  */
-public class FriendsPresenter {
+public class FollowersPresenter {
 
-    FriendsView view;
+    FollowersView view;
     long cursor = -1;
 
-    public FriendsPresenter(FriendsView view){
+    public FollowersPresenter(FollowersView view){
         this.view = view;
     }
 
     public void init(){
 
-        loadFriends();
+        loadFollowers();
     }
 
     public void reload(){
         if(cursor!=0){
-            loadFriends();
+            loadFollowers();
         }
     }
 
-    public void loadFriends(){
+    public void loadFollowers(){
 
         if(view!=null){
             view.startLoader();
         }
 
-
-        new LoadFriends().execute(cursor, new Callback<FriendListResponse>() {
+        new LoadFollowers().execute(cursor, new Callback<FollowersListResponse>() {
             @Override
-            public void success(Result<FriendListResponse> result) {
+            public void success(Result<FollowersListResponse> result) {
                 cursor = result.data.getNextCursor();
                 new UserViewMapper().execute(result.data.getUsers())
                         .subscribe(new Subscriber<List<UserView>>() {

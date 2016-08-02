@@ -1,4 +1,4 @@
-package es.alavpa.examplecode.ui.friends;
+package es.alavpa.examplecode.ui.followers;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,25 +16,24 @@ import es.alavpa.examplecode.ui.model.UserView;
 /**
  * Created by alavpa on 1/8/16.
  */
-public class FriendsActivity extends BaseToolbarActivity implements FriendsView {
+public class FollowersActivity extends BaseToolbarActivity implements FollowersView {
 
-    FriendsAdapter adapter;
+    FollowersAdapter adapter;
     @BindView(R.id.list)
     RecyclerView list;
 
-    FriendsPresenter presenter;
-    LinearLayoutManager mLayoutManager;
-
     private boolean loading = true;
 
+    FollowersPresenter presenter;
+    LinearLayoutManager mLayoutManager;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initMenu(MenuFragment.MENU_FRIENDS);
+        initMenu(MenuFragment.MENU_FOLLOWERS);
 
-        presenter = new FriendsPresenter(this);
+        presenter = new FollowersPresenter(this);
         presenter.init();
 
         mLayoutManager = new LinearLayoutManager(this);
@@ -71,7 +70,7 @@ public class FriendsActivity extends BaseToolbarActivity implements FriendsView 
     @Override
     public void showUsers(List<UserView> users) {
         if(adapter==null){
-            adapter = new FriendsAdapter();
+            adapter = new FollowersAdapter();
             list.setAdapter(adapter);
         }
 

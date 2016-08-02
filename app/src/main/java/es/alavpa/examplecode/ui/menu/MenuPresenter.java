@@ -5,7 +5,9 @@ import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.models.User;
 
+import es.alavpa.examplecode.R;
 import es.alavpa.examplecode.interactors.LoadProfile;
+import es.alavpa.examplecode.ui.App;
 import es.alavpa.examplecode.ui.mappers.ProfileViewMapper;
 import es.alavpa.examplecode.ui.model.ProfileView;
 import rx.Subscriber;
@@ -44,6 +46,7 @@ public class MenuPresenter {
                                 view.loadBg(profileView.getBackground());
                                 view.setName(profileView.getName());
                                 view.setNickname("@" + profileView.getNickname());
+                                view.loadItems(App.getApplication().getResources().getStringArray(R.array.menu_items));
                             }
                         });
             }
@@ -54,4 +57,24 @@ public class MenuPresenter {
             }
         });
     }
+
+    public void onClickFriends(){
+        if(view!=null){
+            if(view.getCurrentPosition()!=MenuFragment.MENU_FRIENDS) {
+                view.goToFriends();
+            }
+            view.hideMenu();
+        }
+    }
+
+    public void onClickFollowers(){
+        if(view!=null){
+            if(view.getCurrentPosition()!=MenuFragment.MENU_FOLLOWERS) {
+                view.goToFollowers();
+            }
+            view.hideMenu();
+        }
+    }
+
+
 }

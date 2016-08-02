@@ -19,7 +19,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.login.LoginActivity"></activity>
-        <activity android:name=".ui.friends.FriendsActivity"></activity>
+        <activity android:name=".ui.friends.FriendsActivity"
+            android:launchMode="singleTask"></activity>
+        <activity android:name=".ui.followers.FollowersActivity"
+            android:launchMode="singleTask"></activity>
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="104f6726bfd593ad0754c72ac8f21bae4af44df5" />

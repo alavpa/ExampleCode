@@ -1,5 +1,6 @@
 package es.alavpa.examplecode.ui.menu;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,11 +17,16 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.alavpa.examplecode.R;
+import es.alavpa.examplecode.ui.Navigator;
 
 /**
  * Created by alavpa on 1/8/16.
  */
 public class MenuFragment extends Fragment implements MenuView{
+
+    public static final String KEY_CURRENT_POSITION = "currentPosition";
+    public static final int MENU_FRIENDS = 0;
+    public static final int MENU_FOLLOWERS = 1;
 
     @BindView(R.id.ll_items)
     public LinearLayout ll_items;
@@ -31,14 +37,42 @@ public class MenuFragment extends Fragment implements MenuView{
     @BindView(R.id.iv_profile)
     public ImageView iv_profile;
 
-    @BindView(R.id.tv_current)
-    TextView tv_current;
+    @BindView(R.id.tv_name)
+    TextView tv_name;
+    @BindView(R.id.tv_nickname)
+    TextView tv_nickname;
 
-    private int mCurrentSelectedPosition = 0;
+    private int mCurrentSelectedPosition;
 
 
+    Navigator navigator;
     MenuPresenter presenter;
 
+    MenuParentView parent;
+
+    public static MenuFragment getInstance(int position){
+
+        MenuFragment menuFragment = new MenuFragment();
+
+        Bundle args = new Bundle();
+        args.putInt(KEY_CURRENT_POSITION,position);
+        menuFragment.setArguments(args);
+
+        return menuFragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        parent = (MenuParentView) context;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        parent = null;
+    }
 
     @Nullable
     @Override
@@ -53,6 +87,9 @@ public class MenuFragment extends Fragment implements MenuView{
         super.onViewCreated(view, savedInstanceState);
 
         ButterKnife.bind(this,view);
+
+        mCurrentSelectedPosition = getArguments().getInt(KEY_CURRENT_POSITION);
+        navigator = new Navigator();
         presenter = new MenuPresenter(this);
         presenter.init();
     }
@@ -91,12 +128,74 @@ public class MenuFragment extends Fragment implements MenuView{
 
     @Override
     public void setName(String name) {
-        tv_current.setText(name);
+        tv_name.setText(name);
     }
 
     @Override
     public void setNickname(String nickname) {
-
+        tv_nickname.setText(nickname);
     }
 
+    @Override
+    public void loadItems(String[] items) {
+        ll_items.removeAllViews();
+
+        for(int i=0;i<items.length;i++){
+            View v;
+            switch (i){
+                case MENU_FRIENDS:
+                    v = createMenuItem(items[i]);
+                    v.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            presenter.onClickFriends();
+                        }
+                    });
+                    break;
+                case MENU_FOLLOWERS:
+                    v = createMenuItem(items[i]);
+                    v.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            presenter.onClickFollowers();
+                        }
+                    });
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void goToFriends() {
+        navigator.goToFriendsActivity(getActivity());
+    }
+
+    @Override
+    public void goToFollowers() {
+        navigator.goToFollowersActivity(getActivity());
+    }
+
+    public View createMenuItem(String text){
+        View v = LayoutInflater.from(getActivity())
+                .inflate(R.layout.row_menuitem,ll_items,false);
+
+        TextView tv_item = (TextView)v.findViewById(R.id.tv_item);
+        tv_item.setText(text);
+
+        ll_items.addView(v);
+
+        return v;
+    }
+
+    @Override
+    public int getCurrentPosition(){
+        return mCurrentSelectedPosition;
+    }
+
+    @Override
+    public void hideMenu() {
+        if(parent!=null){
+            parent.hideMenu();
+        }
+    }
 }
