@@ -7,5 +7,5 @@ import es.alavpa.examplecode.ui.base.BaseView;
  */
 public interface LoginView extends BaseView{
 
-    void goToMain();
+    void goToFriends();
 }

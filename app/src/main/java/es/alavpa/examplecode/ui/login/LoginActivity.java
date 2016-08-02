@@ -52,7 +52,7 @@ public class LoginActivity extends BaseActivity implements LoginView{
     }
 
     @Override
-    public void goToMain() {
-        navigator.goToMainActivity(this);
+    public void goToFriends() {
+        navigator.goToFriendsActivity(this);
     }
 }

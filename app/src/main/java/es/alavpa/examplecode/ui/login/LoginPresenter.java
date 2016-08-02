@@ -21,7 +21,7 @@ public class LoginPresenter {
     public void init(){
         if(isActiveSession()){
             if(view!=null) {
-                view.goToMain();
+                view.goToFriends();
                 view.finish();
             }
         }else{
@@ -47,7 +47,7 @@ public class LoginPresenter {
                     @Override
                     public void onCompleted() {
                         if(view!=null){
-                            view.goToMain();
+                            view.goToFriends();
                         }
                     }
 

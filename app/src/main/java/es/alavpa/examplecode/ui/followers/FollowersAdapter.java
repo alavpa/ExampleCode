@@ -1,4 +1,4 @@
-package es.alavpa.examplecode.ui.friends;
+package es.alavpa.examplecode.ui.followers;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -22,11 +22,9 @@ import es.alavpa.examplecode.ui.model.UserView;
 /**
  * Created by alavpa on 1/8/16.
  */
-public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.Holder> {
-
-
+public class FollowersAdapter extends RecyclerView.Adapter<FollowersAdapter.Holder> {
     List<UserView> users;
-    public FriendsAdapter(){
+    public FollowersAdapter(){
         users = new ArrayList<>();
     }
 
