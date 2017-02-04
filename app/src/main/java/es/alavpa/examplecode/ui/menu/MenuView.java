@@ -8,8 +8,10 @@ public interface MenuView extends MenuParentView{
     void loadAvatar(String url);
     void setName(String name);
     void setNickname(String nickname);
-    void loadItems(String[] items);
+
+    void loadItems(String... items);
     void goToFriends();
     void goToFollowers();
     int getCurrentPosition();
+
 }

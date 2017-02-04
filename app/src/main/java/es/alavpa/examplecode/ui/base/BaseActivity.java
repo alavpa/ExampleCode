@@ -15,6 +15,7 @@ import butterknife.ButterKnife;
 public class BaseActivity extends AppCompatActivity implements BaseView {
 
     ProgressDialog progressDialog;
+    BasePresenter basePresenter;
 
     @Override
     public void setContentView(@LayoutRes int layoutResID) {
@@ -59,5 +60,15 @@ public class BaseActivity extends AppCompatActivity implements BaseView {
             progressDialog.dismiss();
             progressDialog=null;
         }
+    }
+
+    public void setPresenter(BasePresenter basePresenter) {
+        this.basePresenter = basePresenter;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        basePresenter.unsubscribeUseCases();
     }
 }

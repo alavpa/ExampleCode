@@ -2,34 +2,35 @@ package es.alavpa.examplecode.interactors;
 
 import com.twitter.sdk.android.core.TwitterSession;
 
+import java.util.concurrent.Callable;
+
+import es.alavpa.examplecode.data.repositories.TwitterRemoteRepository;
 import es.alavpa.examplecode.data.repositories.TwitterRepository;
-import es.alavpa.examplecode.data.repositories.TwitterRepositoryImpl;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func0;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by alavpa on 1/8/16.
  */
 public class SaveTwitterSession {
 
-    TwitterRepository tr = TwitterRepositoryImpl.getInstance();
+    private
+    TwitterRepository tr = TwitterRemoteRepository.getInstance();
 
 
     public Observable<Void> execute(final TwitterSession twitterSession){
-        return Observable.defer(new Func0<Observable<Void>>() {
+
+        return Observable.fromCallable(new Callable<Void>() {
             @Override
-            public Observable<Void> call() {
+            public Void call() throws Exception {
                 try {
                     tr.setTwitterSession(twitterSession);
                 }catch (Throwable t){
-                    return Observable.error(t);
+                    throw new Exception(t.getMessage());
                 }
-                return Observable.empty();
+
+                return null;
             }
-        })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.newThread());
+        });
+
     }
 }

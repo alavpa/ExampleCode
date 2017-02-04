@@ -1,6 +1,8 @@
 package es.alavpa.examplecode.ui.base;
 
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 
@@ -19,11 +21,9 @@ public class BaseToolbarActivity extends BaseActivity implements MenuParentView{
     public Toolbar toolbar;
     @BindView(R.id.drawer_layout)
     public DrawerLayout drawerLayout;
-
-    private ActionBarDrawerToggle toggle;
     MenuFragment menuFragment;
-
     int position;
+    private ActionBarDrawerToggle toggle;
 
     public void initMenu(int position){
         toolbar = (Toolbar)findViewById(R.id.toolbar);
@@ -31,13 +31,17 @@ public class BaseToolbarActivity extends BaseActivity implements MenuParentView{
 
         menuFragment = MenuFragment.getInstance(position);
         getSupportFragmentManager().beginTransaction().replace(R.id.menu,menuFragment).commit();
+
         setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.app_name, R.string.app_name);
         toggle.setDrawerIndicatorEnabled(true);
-        drawerLayout.setDrawerListener(toggle);
+        drawerLayout.addDrawerListener(toggle);
         drawerLayout.setStatusBarBackground(R.color.colorPrimary);
         toggle.syncState();
 
@@ -56,5 +60,14 @@ public class BaseToolbarActivity extends BaseActivity implements MenuParentView{
 
         String title = getResources().getStringArray(R.array.menu_items)[position];
         toolbar.setTitle(title);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawers();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

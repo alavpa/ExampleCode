@@ -1,59 +1,68 @@
 package es.alavpa.examplecode.ui.menu;
 
-import com.twitter.sdk.android.core.Callback;
-import com.twitter.sdk.android.core.Result;
-import com.twitter.sdk.android.core.TwitterException;
+import android.util.Log;
+
 import com.twitter.sdk.android.core.models.User;
 
 import es.alavpa.examplecode.R;
 import es.alavpa.examplecode.interactors.LoadProfile;
+import es.alavpa.examplecode.interactors.SimpleSubscriber;
 import es.alavpa.examplecode.ui.App;
+import es.alavpa.examplecode.ui.base.BasePresenter;
 import es.alavpa.examplecode.ui.mappers.ProfileViewMapper;
 import es.alavpa.examplecode.ui.model.ProfileView;
-import rx.Subscriber;
 
 /**
  * Created by alavpa on 1/8/16.
  */
-public class MenuPresenter {
+public class MenuPresenter extends BasePresenter {
 
+    private
     MenuView view;
+
+    private
+    LoadProfile loadProfile;
+
+    private
+    ProfileViewMapper profileViewMapper;
+
+
     public MenuPresenter(MenuView view){
         this.view = view;
+        this.loadProfile = new LoadProfile();
+        profileViewMapper = new ProfileViewMapper();
+        setUseCases(loadProfile);
     }
 
     public void init(){
 
-        new LoadProfile().execute(new Callback<User>() {
+        loadProfile.subscribe(new SimpleSubscriber<User>() {
+
             @Override
-            public void success(Result<User> result) {
-                new ProfileViewMapper()
-                        .execute(result.data)
-                        .subscribe(new Subscriber<ProfileView>() {
-                            @Override
-                            public void onCompleted() {
+            public void onBegin() {
 
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-
-                            }
-
-                            @Override
-                            public void onNext(ProfileView profileView) {
-                                view.loadAvatar(profileView.getAvatar());
-                                view.loadBg(profileView.getBackground());
-                                view.setName(profileView.getName());
-                                view.setNickname("@" + profileView.getNickname());
-                                view.loadItems(App.getApplication().getResources().getStringArray(R.array.menu_items));
-                            }
-                        });
             }
 
             @Override
-            public void failure(TwitterException exception) {
+            public void onCompleted() {
 
+            }
+
+            @Override
+            public void onSuccess(User result) {
+                ProfileView profileView = profileViewMapper.map(result);
+
+                view.loadAvatar(profileView.getAvatar());
+                view.loadBg(profileView.getBackground());
+                view.setName(profileView.getName());
+                view.setNickname("@" + profileView.getNickname());
+                view.loadItems(App.getApplication().getResources().getStringArray(R.array.menu_items));
+
+            }
+
+            @Override
+            public void onFail(Throwable e) {
+                Log.e("Error", e.getMessage());
             }
         });
     }

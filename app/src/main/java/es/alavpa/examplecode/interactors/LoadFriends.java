@@ -1,19 +1,27 @@
 package es.alavpa.examplecode.interactors;
 
-import com.twitter.sdk.android.core.Callback;
-
 import es.alavpa.examplecode.data.api.model.FriendListResponse;
+import es.alavpa.examplecode.data.repositories.TwitterRemoteRepository;
 import es.alavpa.examplecode.data.repositories.TwitterRepository;
-import es.alavpa.examplecode.data.repositories.TwitterRepositoryImpl;
+import rx.Observable;
 
 /**
  * Created by alavpa on 1/8/16.
  */
-public class LoadFriends {
+public class LoadFriends extends UseCase<FriendListResponse> {
 
-    TwitterRepository tr = TwitterRepositoryImpl.getInstance();
+    private
+    TwitterRepository tr = TwitterRemoteRepository.getInstance();
 
-    public void execute(long cursor, Callback<FriendListResponse> callback){
-        tr.getFriendsList(cursor, callback);
+    private
+    long cursor;
+
+    public void setCursor(long cursor) {
+        this.cursor = cursor;
+    }
+
+    @Override
+    public Observable<FriendListResponse> buildUseCase() {
+        return tr.getFriendsList(cursor);
     }
 }

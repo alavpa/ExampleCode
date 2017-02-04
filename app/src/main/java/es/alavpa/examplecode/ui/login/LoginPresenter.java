@@ -11,10 +11,12 @@ import rx.Subscriber;
 /**
  * Created by alavpa on 1/8/16.
  */
-public class LoginPresenter {
+class LoginPresenter {
 
+    private
     LoginView view;
-    public LoginPresenter(LoginView view){
+
+    LoginPresenter(LoginView view) {
         this.view = view;
     }
 
@@ -29,16 +31,16 @@ public class LoginPresenter {
         }
     }
 
-    public boolean isActiveSession(){
+    private boolean isActiveSession() {
         TwitterSession session = Twitter.getSessionManager().getActiveSession();
         return session!=null;
     }
 
-    public void setActiveSession(){
+    private void setActiveSession() {
 
     }
 
-    public void onLoginSuccess(Result<TwitterSession> result){
+    void onLoginSuccess(Result<TwitterSession> result) {
 
         //save session
         new SaveTwitterSession()
@@ -48,6 +50,7 @@ public class LoginPresenter {
                     public void onCompleted() {
                         if(view!=null){
                             view.goToFriends();
+                            view.finish();
                         }
                     }
 
@@ -68,7 +71,7 @@ public class LoginPresenter {
 
     }
 
-    public void onLoginFailure(TwitterException e){
+    void onLoginFailure(TwitterException e) {
 
         view.showError(e.getMessage());
     }

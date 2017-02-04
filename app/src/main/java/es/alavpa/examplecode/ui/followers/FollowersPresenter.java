@@ -1,84 +1,81 @@
 package es.alavpa.examplecode.ui.followers;
 
-import com.twitter.sdk.android.core.Callback;
-import com.twitter.sdk.android.core.Result;
-import com.twitter.sdk.android.core.TwitterException;
-
 import java.util.List;
 
 import es.alavpa.examplecode.data.api.model.FollowersListResponse;
 import es.alavpa.examplecode.interactors.LoadFollowers;
+import es.alavpa.examplecode.interactors.SimpleSubscriber;
+import es.alavpa.examplecode.ui.base.BasePresenter;
 import es.alavpa.examplecode.ui.mappers.UserViewMapper;
 import es.alavpa.examplecode.ui.model.UserView;
-import rx.Subscriber;
 
 /**
  * Created by alavpa on 1/8/16.
  */
-public class FollowersPresenter {
+public class FollowersPresenter extends BasePresenter {
 
+    private
     FollowersView view;
+
+    private
     long cursor = -1;
 
-    public FollowersPresenter(FollowersView view){
+    private
+    LoadFollowers loadFollowers;
+
+    private
+    UserViewMapper userViewMapper;
+
+    public FollowersPresenter(FollowersView view) {
         this.view = view;
+        loadFollowers = new LoadFollowers();
+        userViewMapper = new UserViewMapper();
+
+        setUseCases(loadFollowers);
     }
 
-    public void init(){
+    public void init() {
 
         loadFollowers();
     }
 
-    public void reload(){
-        if(cursor!=0){
+    public void reload() {
+        if (cursor != 0) {
             loadFollowers();
         }
     }
 
-    public void loadFollowers(){
+    private void loadFollowers() {
 
-        if(view!=null){
-            view.startLoader();
-        }
+        loadFollowers.setCursor(cursor);
 
-        new LoadFollowers().execute(cursor, new Callback<FollowersListResponse>() {
+        loadFollowers.subscribe(new SimpleSubscriber<FollowersListResponse>() {
+
             @Override
-            public void success(Result<FollowersListResponse> result) {
-                cursor = result.data.getNextCursor();
-                new UserViewMapper().execute(result.data.getUsers())
-                        .subscribe(new Subscriber<List<UserView>>() {
-                            @Override
-                            public void onCompleted() {
-                                if (view != null) {
-                                    view.stopLoader();
-                                }
-                            }
+            public void onBegin() {
+                view.startLoader();
+            }
 
-                            @Override
-                            public void onError(Throwable e) {
-                                if (view != null) {
-                                    view.stopLoader();
-                                }
-                            }
+            @Override
+            public void onCompleted() {
+                view.stopLoader();
+            }
 
-                            @Override
-                            public void onNext(List<UserView> userViews) {
-                                if (view != null) {
-                                    view.showUsers(userViews);
-                                }
-                            }
-                        });
+            @Override
+            public void onSuccess(FollowersListResponse result) {
+
+                List<UserView> userViews = userViewMapper.map(result.getUsers());
+                view.showUsers(userViews);
+                cursor = result.getNextCursor();
 
             }
 
             @Override
-            public void failure(TwitterException exception) {
-                if (view != null) {
-                    view.stopLoader();
-                    view.showError(exception.getMessage());
-                }
+            public void onFail(Throwable e) {
+
+                view.showError(e.getMessage());
+
             }
         });
-
     }
 }

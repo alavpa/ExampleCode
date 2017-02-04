@@ -1,19 +1,21 @@
 package es.alavpa.examplecode.interactors;
 
-import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.models.User;
 
+import es.alavpa.examplecode.data.repositories.TwitterRemoteRepository;
 import es.alavpa.examplecode.data.repositories.TwitterRepository;
-import es.alavpa.examplecode.data.repositories.TwitterRepositoryImpl;
+import rx.Observable;
 
 /**
  * Created by alavpa on 1/8/16.
  */
-public class LoadProfile {
+public class LoadProfile extends UseCase<User> {
 
-    TwitterRepository tr = TwitterRepositoryImpl.getInstance();
+    private
+    TwitterRepository tr = TwitterRemoteRepository.getInstance();
 
-    public void execute(Callback<User> callback){
-        tr.getUserInfo(callback);
+    @Override
+    public Observable<User> buildUseCase() {
+        return tr.getUserInfo();
     }
 }

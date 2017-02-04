@@ -3,7 +3,6 @@ package es.alavpa.examplecode.ui.menu;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +17,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.alavpa.examplecode.R;
 import es.alavpa.examplecode.ui.Navigator;
+import es.alavpa.examplecode.ui.base.BaseFragment;
 
 /**
  * Created by alavpa on 1/8/16.
  */
-public class MenuFragment extends Fragment implements MenuView{
+public class MenuFragment extends BaseFragment implements MenuView {
 
     public static final String KEY_CURRENT_POSITION = "currentPosition";
     public static final int MENU_FRIENDS = 0;
@@ -41,14 +41,10 @@ public class MenuFragment extends Fragment implements MenuView{
     TextView tv_name;
     @BindView(R.id.tv_nickname)
     TextView tv_nickname;
-
-    private int mCurrentSelectedPosition;
-
-
     Navigator navigator;
     MenuPresenter presenter;
-
     MenuParentView parent;
+    private int mCurrentSelectedPosition;
 
     public static MenuFragment getInstance(int position){
 
@@ -77,9 +73,7 @@ public class MenuFragment extends Fragment implements MenuView{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_menu, container, false);
-
-        return view;
+        return inflater.inflate(R.layout.fragment_menu, container, false);
     }
 
     @Override
@@ -91,6 +85,7 @@ public class MenuFragment extends Fragment implements MenuView{
         mCurrentSelectedPosition = getArguments().getInt(KEY_CURRENT_POSITION);
         navigator = new Navigator();
         presenter = new MenuPresenter(this);
+        setBasePresenter(presenter);
         presenter.init();
     }
 
